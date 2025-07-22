@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="darker">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpaceKO Bounty Calculator - Enhanced UX</title>
+    <style>
+        :root {
+            /* Darker Theme (Default) */
+            --primary-color-dark: #76a9ff;
+            --secondary-color-dark: #ff5599;
+            --background-start-dark: #0d1117;
+            --background-end-dark: #161b22;
+            --container-bg-dark: rgba(13, 17, 23, 0.85);
+            --input-bg-dark: rgba(1, 4, 9, 0.75);
+            --text-color-dark: #c9d1d9;
+            --text-color-light-dark: #99a1a9;
+            --border-color-dark: rgba(118, 169, 255, 0.2);
+            --history-item-bg-dark: rgba(22, 27, 34, 0.7);
+            --history-item-hover-bg-dark: rgba(30, 37, 48, 0.8);
+            --result-text-color-dark: #ffffff;
+
+            /* Pastel Light Theme */
+            --primary-color-light: #8e82ff;
+            --secondary-color-light: #ff8b94;
+            --background-start-light: #fde2e4;
+            --background-end-light: #e2eafc;
+            --container-bg-light: rgba(255, 255, 255, 0.7);
+            --input-bg-light: rgba(240, 243, 255, 0.9);
+            --text-color-light: #575a6b;
+            --text-color-light-light: #7a7d8d;
+            --border-color-light: rgba(142, 130, 255, 0.4);
+            --history-item-bg-light: rgba(230, 235, 245, 0.8);
+            --history-item-hover-bg-light: rgba(220, 228, 240, 0.9);
+            --result-text-color-light: #ffffff;
+        }
+
+        html[data-theme='darker'] {
+            --primary-color: var(--primary-color-dark);
+            --secondary-color: var(--secondary-color-dark);
+            --background-start: var(--background-start-dark);
+            --background-end: var(--background-end-dark);
+            --container-bg: var(--container-bg-dark);
+            --input-bg: var(--input-bg-dark);
+            --text-color: var(--text-color-dark);
+            --text-color-light: var(--text-color-light-dark);
+            --border-color: var(--border-color-dark);
+            --history-item-bg: var(--history-item-bg-dark);
+            --history-item-hover-bg: var(--history-item-hover-bg-dark);
+            --result-text-color: var(--result-text-color-dark);
+            color: var(--text-color);
+        }
+
+        html[data-theme='light'] {
+            --primary-color: var(--primary-color-light);
+            --secondary-color: var(--secondary-color-light);
+            --background-start: var(--background-start-light);
+            --background-end: var(--background-end-light);
+            --container-bg: var(--container-bg-light);
+            --input-bg: var(--input-bg-light);
+            --text-color: var(--text-color-light);
+            --text-color-light: var(--text-color-light-light);
+            --border-color: var(--border-color-light);
+            --history-item-bg: var(--history-item-bg-light);
+            --history-item-hover-bg: var(--history-item-hover-bg-light);
+            --result-text-color: var(--result-text-color-light);
+            color: var(--text-color);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--background-start), var(--background-end));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            transition: background 0.5s ease;
+        }
+
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 90%;
+            max-width: 450px;
+            background: var(--container-bg);
+            backdrop-filter: blur(12px);
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            transition: all 0.5s ease;
+        }
+
+        .theme-switcher {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+
+        .switch input { display: none; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #555;
+            transition: .4s;
+            border-radius: 28px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            text-shadow: 0 0 15px rgba(128, 192, 255, 0.3);
+            font-size: 2rem;
+            letter-spacing: 1px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(128, 192, 255, 0.5);
+        }
+
+        .result-display {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--result-text-color);
+            text-align: center;
+            padding: 1.25rem;
+            margin: 2rem 0;
+            border-radius: 1rem;
+            font-size: 1.8rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            transition: all 0.4s ease;
+            transform: scale(0.95);
+            opacity: 0;
+            display: none;
+        }
+
+        .result-display.visible {
+            transform: scale(1);
+            opacity: 1;
+            display: block;
+        }
+        
+        .history-container {
+            margin-top: 2rem;
+            max-height: 200px;
+            overflow-y: auto;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1rem;
+        }
+
+        .history-title {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .history-item {
+            padding: 12px;
+            margin-bottom: 8px;
+            background: var(--history-item-bg);
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid transparent;
+            color: var(--text-color-light);
+            transition: all 0.3s;
+        }
+
+        .history-item:hover {
+            background: var(--history-item-hover-bg);
+            border-left-color: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="container">
+        <div class="theme-switcher">
+            <label class="switch">
+                <input type="checkbox" id="theme-toggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <h1>SpaceKO Bounty Calculator</h1>
+        
+        <div class="form-group">
+            <label for="startingStack">Starting Stack</label>
+            <input type="number" id="startingStack" list="stack-options" value="20000" placeholder="Enter starting stack">
+            <datalist id="stack-options">
+                <option value="20000"></option>
+                <option value="50000"></option>
+                <option value="100000"></option>
+            </datalist>
+        </div>
+        
+        <div class="form-group">
+            <label for="buyin">Buy-in Amount (€)</label>
+            <input type="number" id="buyin" list="buyin-options" value="2" step="0.01" min="0" placeholder="Enter buy-in amount">
+            <datalist id="buyin-options">
+                <option value="0.5"></option>
+                <option value="1"></option>
+                <option value="2"></option>
+                <option value="5"></option>
+                <option value="10"></option>
+                <option value="20"></option>
+                <option value="50"></option>
+                <option value="100"></option>
+            </datalist>
+        </div>
+        
+        <div class="form-group">
+            <label for="averageKO">Average KO Value (€)</label>
+            <input type="number" id="averageKO" step="0.01" min="0" placeholder="e.g., 4.50">
+        </div>
+
+        <div class="result-display" id="resultDisplay">
+            <span id="resultValue">0</span>
+        </div>
+        
+        <div class="history-container" id="historyContainer" style="display: none;">
+            <div class="history-title">Recent Calculations</div>
+            <div id="historyItems"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Particles.js configuration (condensed for brevity)
+            particlesJS("particles-js", {"particles":{"number":{"value":50,"density":{"enable":true,"value_area":800}},"color":{"value":"#ffffff"},"shape":{"type":"circle"},"opacity":{"value":0.5,"random":true},"size":{"value":3,"random":true},"line_linked":{"enable":true,"distance":150,"color":"#ffffff","opacity":0.4,"width":1},"move":{"enable":true,"speed":2,"direction":"none","random":true,"out_mode":"out"}},"interactivity":{"detect_on":"canvas","events":{"onhover":{"enable":true,"mode":"repulse"},"onclick":{"enable":true,"mode":"push"}}},"retina_detect":true});
+
+            // Theme switcher logic
+            const themeToggle = document.getElementById('theme-toggle');
+            const docElement = document.documentElement;
+            const currentTheme = localStorage.getItem('theme') || 'darker';
+            
+            docElement.setAttribute('data-theme', currentTheme);
+            if (currentTheme === 'light') {
+                themeToggle.checked = true;
+            }
+
+            themeToggle.addEventListener('change', function() {
+                const targetTheme = this.checked ? 'light' : 'darker';
+                docElement.setAttribute('data-theme', targetTheme);
+                localStorage.setItem('theme', targetTheme);
+            }, false);
+
+            // Calculator logic
+            const inputs = document.querySelectorAll('#startingStack, #buyin, #averageKO');
+            const resultDisplay = document.getElementById('resultDisplay');
+            const resultValue = document.getElementById('resultValue');
+            const historyContainer = document.getElementById('historyContainer');
+            const historyItems = document.getElementById('historyItems');
+            
+            let calculationHistory = [];
+            let calculationTimeout;
+
+            inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    clearTimeout(calculationTimeout);
+                    calculationTimeout = setTimeout(calculateBountyValue, 300); // Debounce
+                });
+            });
+
+            function calculateBountyValue() {
+                const startingStack = parseFloat(document.getElementById('startingStack').value);
+                const buyin = parseFloat(document.getElementById('buyin').value);
+                const averageKO = parseFloat(document.getElementById('averageKO').value);
+                
+                if (isNaN(averageKO) || isNaN(buyin) || isNaN(startingStack) || averageKO <= 0 || buyin <= 0) {
+                    resultDisplay.classList.remove('visible');
+                    return;
+                }
+                
+                const bountyValue = Math.round(((0.5 * averageKO) / (buyin * 0.9)) * startingStack);
+                
+                resultValue.textContent = bountyValue.toLocaleString();
+                resultDisplay.classList.add('visible');
+                
+                addToHistory({
+                    startingStack: startingStack,
+                    buyin: buyin,
+                    averageKO: averageKO,
+                    result: bountyValue
+                });
+            }
+
+            function addToHistory(calculation) {
+                if (calculationHistory.length > 0 && calculationHistory[0].result === calculation.result) {
+                    return; // Avoid duplicates
+                }
+                calculationHistory.unshift(calculation);
+                if (calculationHistory.length > 5) calculationHistory.pop();
+                updateHistoryDisplay();
+            }
+
+            function updateHistoryDisplay() {
+                historyItems.innerHTML = '';
+                if (calculationHistory.length > 0) {
+                    historyContainer.style.display = 'block';
+                    calculationHistory.forEach(item => {
+                        const historyItem = document.createElement('div');
+                        historyItem.className = 'history-item';
+                        historyItem.innerHTML = `
+                            <div class="history-details">
+                                ${item.startingStack.toLocaleString()} stack, €${item.buyin}, €${item.averageKO.toFixed(2)} KO
+                            </div>
+                            <div class="history-result">${item.result.toLocaleString()}</div>`;
+                        historyItems.appendChild(historyItem);
+                    });
+                } else {
+                    historyContainer.style.display = 'none';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
