@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" data-theme="darker">
 <head>
@@ -6,18 +7,18 @@
     <title>SpaceKO Bounty Calculator - Enhanced UX</title>
     <style>
         :root {
-            /* Darker Theme (Default) */
-            --primary-color-dark: #76a9ff;
-            --secondary-color-dark: #ff5599;
-            --background-start-dark: #0d1117;
-            --background-end-dark: #161b22;
-            --container-bg-dark: rgba(13, 17, 23, 0.85);
-            --input-bg-dark: rgba(1, 4, 9, 0.75);
-            --text-color-dark: #c9d1d9;
-            --text-color-light-dark: #99a1a9;
-            --border-color-dark: rgba(118, 169, 255, 0.2);
-            --history-item-bg-dark: rgba(22, 27, 34, 0.7);
-            --history-item-hover-bg-dark: rgba(30, 37, 48, 0.8);
+            /* Pastel Dark Theme (Default) */
+            --primary-color-dark: #b48ead; /* Muted Mauve */
+            --secondary-color-dark: #88c0d0; /* Pastel Blue */
+            --background-start-dark: #2a2c3c; /* Dark Slate Blue */
+            --background-end-dark: #2e3440; /* Darker Slate Blue */
+            --container-bg-dark: rgba(46, 52, 64, 0.85);
+            --input-bg-dark: rgba(59, 66, 82, 0.75);
+            --text-color-dark: #d8dee9; /* Light Grey */
+            --text-color-light-dark: #a2a9b6; /* Medium Grey */
+            --border-color-dark: rgba(180, 142, 173, 0.25);
+            --history-item-bg-dark: rgba(59, 66, 82, 0.7);
+            --history-item-hover-bg-dark: rgba(67, 76, 94, 0.8);
             --result-text-color-dark: #ffffff;
 
             /* Pastel Light Theme */
@@ -183,12 +184,19 @@
             color: var(--text-color);
             font-size: 1rem;
             transition: all 0.3s ease;
+            -moz-appearance: textfield; /* Firefox */
+        }
+        
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
         }
 
         input[type="number"]:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 10px rgba(128, 192, 255, 0.5);
+            box-shadow: 0 0 10px rgba(180, 142, 173, 0.5);
         }
 
         .result-display {
